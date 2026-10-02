@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evaluación de Evapotranspiración en Cucumis sativus L.</title>
+  <style>
+    :root {
+      /* Colors */
+      --color-ink-black: #000000;
+      --color-paper-white: #ffffff;
+      --color-soft-mist: #e2e2e2;
+      --color-graphite: #595959;
+      --color-electric-indigo: #4d49fc;
+      --color-figma-cyan: #00b6ff;
+      --color-figma-green: #24cb71;
+      --color-figma-orange: #ff7237;
+
+      /* Typography — Font Families */
+      --font-figmasans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-figmamono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+      /* Typography — Scale */
+      --text-caption: 12px;
+      --text-body-sm: 16px;
+      --text-body: 18px;
+      --text-heading: 24px;
+      --text-heading-lg: 56px;
+      --text-display: 72px;
+
+      /* Spacing */
+      --spacing-4: 4px;
+      --spacing-8: 8px;
+      --spacing-12: 12px;
+      --spacing-16: 16px;
+      --spacing-24: 24px;
+      --spacing-32: 32px;
+      --spacing-40: 40px;
+      --spacing-64: 64px;
+      --spacing-80: 80px;
+
+      /* Border Radius */
+      --radius-sm: 2px;
+      --radius-lg: 8px;
+      --radius-2xl: 16px;
+      --radius-full: 50px;
+
+      /* Shadows */
+      --shadow-xl: rgba(0, 0, 0, 0.1) 0px 24px 70px 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-paper-white);
+      color: var(--color-ink-black);
+      font-family: var(--font-figmasans);
+      font-size: var(--text-body-sm);
+      line-height: 1.45;
+      letter-spacing: -0.11px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      height: 64px;
+      background-color: var(--color-paper-white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--color-ink-black);
+    }
+
+    .figma-logo-mark {
+      display: grid;
+      grid-template-columns: 12px 12px;
+      grid-template-rows: 12px 12px;
+      width: 24px;
+      height: 24px;
+    }
+
+    .dot-1 { background-color: var(--color-figma-orange); border-radius: 12px 0 0 12px; }
+    .dot-2 { background-color: var(--color-figma-cyan); border-radius: 0 12px 12px 0; }
+    .dot-3 { background-color: var(--color-figma-green); border-radius: 12px; }
+    .dot-4 { background-color: var(--color-ink-black); border-radius: 12px 0 12px 12px; }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 24px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--color-ink-black);
+      font-weight: 400;
+      font-size: 16px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn-pill-black {
+      background-color: var(--color-ink-black);
+      color: var(--color-paper-white);
+      border-radius: var(--radius-full);
+      padding: 8px 18px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--color-ink-black);
+      color: var(--color-ink-black);
+      border-radius: var(--radius-lg);
+      padding: 8px 18px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .btn-primary-indigo {
+      background-color: var(--color-electric-indigo);
+      color: var(--color-paper-white);
+      border-radius: var(--radius-full);
+      padding: 10px 20px;
+      text-decoration: none;
+      font-weight: 480;
+      font-size: 16px;
+      display: inline-block;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      padding: 80px 0;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hero-card {
+      background-color: var(--color-paper-white);
+      border-radius: var(--radius-2xl);
+      padding: 40px;
+      box-shadow: var(--shadow-xl);
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .hero-title {
+      font-size: var(--text-heading-lg);
+      font-weight: 320;
+      line-height: 1.1;
+      letter-spacing: -0.84px;
+      margin-bottom: 24px;
+      color: var(--color-ink-black);
+    }
+
+    .hero-subtext {
+      font-size: var(--text-body);
+      color: var(--color-graphite);
+      margin-bottom: 32px;
+      line-height: 1.4;
+      letter-spacing: -0.18px;
+    }
+
+    .author-tag {
+      font-family: var(--font-figmamono);
+      font-size: var(--text-caption);
+      letter-spacing: 0.04em;
+      color: var(--color-graphite);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    /* Main Content Sections */
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-title {
+      font-size: var(--text-heading-lg);
+      font-weight: 320;
+      letter-spacing: -0.84px;
+      line-height: 1.1;
+      margin-bottom: 40px;
+      text-align: left;
+    }
+
+    /* Soft Panel / Summary Grid */
+    .summary-panel {
+      background-color: var(--color-soft-mist);
+      border-radius: var(--radius-2xl);
+      padding: 40px;
+      margin-bottom: 64px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--color-paper-white);
+      border-radius: var(--radius-2xl);
+      padding: 24px;
+    }
+
+    .card-title {
+      font-size: var(--text-heading);
+      font-weight: 520;
+      letter-spacing: -0.24px;
+      margin-bottom: 12px;
+    }
+
+    .card-meta {
+      font-size: 14px;
+      color: var(--color-graphite);
+      margin-bottom: 8px;
+    }
+
+    /* Custom Table Styling */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: var(--text-body-sm);
+    }
+
+    th, td {
+      padding: 16px;
+      border-bottom: 1px solid var(--color-soft-mist);
+    }
+
+    th {
+      font-weight: 700;
+      color: var(--color-ink-black);
+      background-color: var(--color-paper-white);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-figmamono);
+      font-size: var(--text-caption);
+      background-color: var(--color-soft-mist);
+      color: var(--color-ink-black);
+    }
+
+    /* Code / Technical Notation */
+    .annotation {
+      font-family: var(--font-figmamono);
+      letter-spacing: 0.04em;
+      font-size: 14px;
+      color: var(--color-graphite);
+    }
+
+    footer {
+      padding: 64px 0;
+      border-top: 1px solid var(--color-soft-mist);
+      text-align: center;
+      color: var(--color-graphite);
+      font-size: var(--text-body-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header>
+    <a href="#" class="brand">
+      <div class="figma-logo-mark">
+        <div class="dot-1"></div>
+        <div class="dot-2"></div>
+        <div class="dot-3"></div>
+        <div class="dot-4"></div>
+      </div>
+      <span>UTEQ Investigación</span>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="#resumen">Resumen</a></li>
+        <li><a href="#metodologia">Metodología</a></li>
+        <li><a href="#resultados">Resultados</a></li>
+        <li><a href="#kc">Valores Kc</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <a href="#contacto" class="btn-ghost">Ver Autores</a>
+      <a href="#" class="btn-pill-black">Descargar PDF</a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-card">
+        <span class="author-tag">Marlon Fernando Monge-Freile et al. (2026)[cite: 2]</span>
+        <h1 class="hero-title">Evapotranspiración en Cucumis sativus L.</h1>
+        <p class="hero-subtext">
+          Evaluación de métodos indirectos de estimación de la evapotranspiración del cultivo de pepino comparados directamente con lisímetros de drenaje en Mocache, Ecuador[cite: 2].
+        </p>
+        <a href="#resultados" class="btn-primary-indigo">Explorar Resultados</a>
+      </div>
+    </section>
+
+    <!-- Resumen / Generalidades -->
+    <section id="resumen" class="section">
+      <h2 class="section-title">Resumen Ejecutivo</h2>
+      <div class="summary-panel">
+        <p style="font-size: var(--text-body); margin-bottom: 24px;">
+          La gestión eficiente del agua es crítica en cultivos hortícolas sensibles al déficit hídrico[cite: 2]. Este estudio evaluó la precisión de cuatro métodos indirectos (Penman–Monteith FAO-56, Hargreaves–Samani, Priestley–Taylor y tanque Clase A) para estimar la evapotranspiración ($ET_c$) del pepino frente a mediciones lisimétricas directas en el campus "La María" de la UTEQ[cite: 2].
+        </p>
+        <div class="grid-4">
+          <div class="card">
+            <span class="badge">MEJOR MÉTODO</span>
+            <div class="card-title" style="margin-top: 12px;">Penman–Monteith</div>
+            <p class="card-meta">FAO-56</p>
+            <p>Alta correlación ($R^2 = 0.9728$) combinada con el menor error ($RMSE = 5.97\text{ mm}$, $d = 0.94$)[cite: 2].</p>
+          </div>
+          <div class="card">
+            <span class="badge">SOBREESTIMACIÓN</span>
+            <div class="card-title" style="margin-top: 12px;">Priestley–Taylor</div>
+            <p class="card-meta">Dominancia Radiativa</p>
+            <p>Sobreestimó sistemáticamente la demanda ($MBE = +35.57\text{ mm}$, $RMSE = 37.57\text{ mm}$)[cite: 2].</p>
+          </div>
+          <div class="card">
+            <span class="badge">SUBESTIMACIÓN</span>
+            <div class="card-title" style="margin-top: 12px;">Hargreaves–Samani</div>
+            <p class="card-meta">Basado en Temperatura</p>
+            <p>Subestimó debido a la baja amplitud térmica de la zona ($MBE = -20.24\text{ mm}$)[cite: 2].</p>
+          </div>
+          <div class="card">
+            <span class="badge">INCOMPLETO</span>
+            <div class="card-title" style="margin-top: 12px;">Tanque Clase A</div>
+            <p class="card-meta">Baja Confiabilidad</p>
+            <p>Presentó baja correlación por discontinuidad en las lecturas directas ($R^2 = 0.0001$)[cite: 2].</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Metodología -->
+    <section id="metodologia" class="section">
+      <h2 class="section-title">Diseño Experimental</h2>
+      <div class="grid-3">
+        <div class="card" style="border: 1px solid var(--color-soft-mist);">
+          <div class="card-title">Lisímetros de Drenaje</div>
+          <p class="annotation">8 UNIDADES EXPERIMENTALES</p>
+          <p style="margin-top: 12px;">6 lisímetros cultivados con pepino (*Cucumis sativus L.*) y 2 con cobertura permanente de pasto como referencia ($ETo$)[cite: 2]. Cada bloque integrado por 18 plantas[cite: 2].</p>
+        </div>
+        <div class="card" style="border: 1px solid var(--color-soft-mist);">
+          <div class="card-title">Ubicación y Clima</div>
+          <p class="annotation">MOCACHE, LOS RÍOS, ECUADOR</p>
+          <p style="margin-top: 12px;">Campus "La María" (UTEQ)[cite: 2]. Altitud 74 m.s.n.m., temperatura media de 26 °C, humedad relativa de 85% y 2.000 mm de precipitación anual[cite: 2].</p>
+        </div>
+        <div class="card" style="border: 1px solid var(--color-soft-mist);">
+          <div class="card-title">Balance Hídrico</div>
+          <p class="annotation">ETlis = R + P - D - ΔS</p>
+          <p style="margin-top: 12px;">Monitoreo diario de riego aplicado ($R$), precipitación ($P$), drenaje ($D$) y variación del almacenamiento en el suelo ($\Delta S$)[cite: 2].</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Resultados Estadísticos -->
+    <section id="resultados" class="section">
+      <h2 class="section-title">Desempeño de Métodos Indirectos</h2>
+      <p style="font-size: var(--text-body); color: var(--color-graphite); margin-bottom: 24px;">
+        Comparación de la evapotranspiración acumulada estimada ($ET_c$) respecto a la medida en lisímetros ($n = 3$ etapas fenológicas)[cite: 2]:
+      </p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Método</th>
+              <th>r</th>
+              <th>R²</th>
+              <th>RMSE (mm)</th>
+              <th>MAE (mm)</th>
+              <th>MBE (mm)</th>
+              <th>ER (%)</th>
+              <th>d (Willmott)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Penman–Monteith FAO-56</strong>[cite: 2]</td>
+              <td>0,9863[cite: 2]</td>
+              <td>0,9728[cite: 2]</td>
+              <td>5,97[cite: 2]</td>
+              <td>5,33[cite: 2]</td>
+              <td>+4,31[cite: 2]</td>
+              <td>9,1%[cite: 2]</td>
+              <td><strong>0,94</strong>[cite: 2]</td>
+            </tr>
+            <tr>
+              <td><strong>Priestley–Taylor</strong>[cite: 2]</td>
+              <td>0,9923[cite: 2]</td>
+              <td>0,9847[cite: 2]</td>
+              <td>37,57[cite: 2]</td>
+              <td>35,57[cite: 2]</td>
+              <td>+35,57[cite: 2]</td>
+              <td>62,6%[cite: 2]</td>
+              <td>0,43[cite: 2]</td>
+            </tr>
+            <tr>
+              <td><strong>Hargreaves–Samani</strong>[cite: 2]</td>
+              <td>0,9900[cite: 2]</td>
+              <td>0,9801[cite: 2]</td>
+              <td>20,35[cite: 2]</td>
+              <td>20,24[cite: 2]</td>
+              <td>-20,24[cite: 2]</td>
+              <td>37,3%[cite: 2]</td>
+              <td>0,54[cite: 2]</td>
+            </tr>
+            <tr>
+              <td><strong>Tanque Clase A</strong>[cite: 2]</td>
+              <td>0,0072[cite: 2]</td>
+              <td>0,0001[cite: 2]</td>
+              <td>35,58[cite: 2]</td>
+              <td>34,10[cite: 2]</td>
+              <td>-34,10[cite: 2]</td>
+              <td>60,3%[cite: 2]</td>
+              <td>0,31[cite: 2]</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Coeficientes Kc -->
+    <section id="kc" class="section">
+      <h2 class="section-title">Coeficientes de Cultivo (Kc)</h2>
+      <p style="font-size: var(--text-body); color: var(--color-graphite); margin-bottom: 24px;">
+        Valores locales calculados como la relación $Kc = \frac{ET_{c,lis}}{ET_{o,lis}}$ frente a las tablas de referencia FAO[cite: 2]:
+      </p>
+
+      <div class="grid-3">
+        <div class="card" style="background-color: var(--color-soft-mist);">
+          <span class="badge">ETAPA INICIAL</span>
+          <div class="card-title" style="margin-top: 16px;">Kc = 0,66</div>
+          <p class="annotation">FAO de Referencia: 0,50</p>
+          <p style="margin-top: 12px; color: var(--color-graphite);">
+            Mayor humedad relativa e inicio de evaporación directa desde el suelo por riegos frecuentes[cite: 2].
+          </p>
+        </div>
+        <div class="card" style="background-color: var(--color-soft-mist);">
+          <span class="badge">ETAPA MEDIA</span>
+          <div class="card-title" style="margin-top: 16px;">Kc = 1,37</div>
+          <p class="annotation">FAO de Referencia: 1,40</p>
+          <p style="margin-top: 12px; color: var(--color-graphite);">
+            Máxima cobertura foliar y demanda hídrica peak (hasta 13,42 mm/día)[cite: 2].
+          </p>
+        </div>
+        <div class="card" style="background-color: var(--color-soft-mist);">
+          <span class="badge">ETAPA FINAL</span>
+          <div class="card-title" style="margin-top: 16px;">Kc = 0,53</div>
+          <p class="annotation">FAO de Referencia: 0,70</p>
+          <p style="margin-top: 12px; color: var(--color-graphite);">
+            Reducción por senescencia del follaje y cierre estomático progresivo[cite: 2].
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Autores / Contacto -->
+    <section id="contacto" class="section">
+      <h2 class="section-title">Autores & Afiliaciones</h2>
+      <div class="card" style="border: 1px solid var(--color-soft-mist);">
+        <p style="margin-bottom: 12px;"><strong>Marlon Fernando Monge-Freile*</strong> (mmongef@uteq.edu.ec) — UTEQ, Ecuador[cite: 2]</p>
+        <p style="margin-bottom: 12px;"><strong>Jordy Fabricio Villacis Tipantuña</strong> — UTEQ, Ecuador[cite: 2]</p>
+        <p style="margin-bottom: 12px;"><strong>Dayann Andrea Vera Saltos</strong> — UTEQ, Ecuador[cite: 2]</p>
+        <p style="margin-bottom: 12px;"><strong>Génesis Yamileth Bustamante Saltos</strong> — UTEQ, Ecuador[cite: 2]</p>
+        <p><strong>José Noel Condori-Cahuapaza</strong> — Universidad Tecnológica de Los Andes, Perú[cite: 2]</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2026 Universidad Técnica Estatal de Quevedo (UTEQ) — Mocache, Los Ríos, Ecuador[cite: 2]</p>
+  </footer>
+
+</body>
+</html>
